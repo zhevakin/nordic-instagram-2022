@@ -1,18 +1,17 @@
 import type { NextPage } from 'next'
+import Link from 'next/link'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert'
 import { useForm } from 'react-hook-form'
 import {
   useAuthState,
-  useCreateUserWithEmailAndPassword,
+  useSignInWithEmailAndPassword,
 } from 'react-firebase-hooks/auth'
 import { signOut } from 'firebase/auth'
 import { auth } from '../../app/firebaseApp'
-import Link from 'next/link'
 
 type FormData = {
-  name: string
   email: string
   password: string
 }
@@ -20,13 +19,13 @@ type FormData = {
 const Register: NextPage = () => {
   const [user] = useAuthState(auth)
 
-  const [createUserWithEmailAndPassword, , , error] =
-    useCreateUserWithEmailAndPassword(auth)
+  const [signInWithEmailAndPassword, , , error] =
+    useSignInWithEmailAndPassword(auth)
 
   const { register, handleSubmit } = useForm<FormData>()
 
   const onSubmit = handleSubmit((data) => {
-    createUserWithEmailAndPassword(data.email, data.password)
+    signInWithEmailAndPassword(data.email, data.password)
   })
 
   if (user) {
@@ -40,14 +39,7 @@ const Register: NextPage = () => {
 
   return (
     <form onSubmit={onSubmit}>
-      <h1>Регистрация</h1>
-      <TextField
-        {...register('name')}
-        type="text"
-        label="Ваше имя"
-        sx={{ mb: 2 }}
-        fullWidth
-      />
+      <h1>Вход</h1>
       <TextField
         {...register('email')}
         type="email"
@@ -63,15 +55,16 @@ const Register: NextPage = () => {
         fullWidth
       />
       <Button type="submit" variant="contained" fullWidth>
-        Зарегистрироваться
+        Войти
       </Button>
-      {error?.code === 'auth/email-already-in-use' && (
+      {error && (
         <Alert sx={{ mt: 2 }} severity="error">
-          Email занят
+          {error?.code === 'auth/user-not-found' && 'Аккаунт не найден'}
+          {error?.code === 'auth/wrong-password' && 'Неправильный пароль'}
         </Alert>
       )}
       <Alert sx={{ mt: 2 }} severity="info">
-        Уже есть аккаунт? <Link href="/auth/login">Войдите</Link>.
+        Еще нет аккаунта? <Link href="/auth/register">Зарегистрируйтесь</Link>.
       </Alert>
     </form>
   )
