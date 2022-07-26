@@ -15,10 +15,14 @@ const postConverter: FirestoreDataConverter<Post> = {
     snapshot: QueryDocumentSnapshot,
     options: SnapshotOptions
   ): Post {
-    const data = snapshot.data(options) as Post
+    const data = snapshot.data(options)
     return {
+      uid: data.uid,
       id: snapshot.id,
       text: data.text,
+      createdAt: data.createdAt
+        ? new Date(data.createdAt?.seconds * 1000)
+        : null,
     }
   },
 }

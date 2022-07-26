@@ -10,12 +10,17 @@ const Posts: NextPage = () => {
     collection(db, 'posts').withConverter(postConverter)
   )
 
+  console.log(posts)
+
   return (
     <div>
       <h1>Список постов</h1>
       {posts &&
         posts.map((post) => (
           <div key={post.id}>
+            {post.createdAt && (
+              <span>{post.createdAt.toLocaleDateString()}</span>
+            )}{' '}
             <Link href={`/posts/${post.id}`}>{post.text}</Link>
           </div>
         ))}
