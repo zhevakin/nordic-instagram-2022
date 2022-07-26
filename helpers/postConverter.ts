@@ -20,6 +20,7 @@ const postConverter: FirestoreDataConverter<Post> = {
       uid: data.uid,
       id: snapshot.id,
       text: data.text,
+      imageURL: data.imageURL,
       createdAt: data.createdAt
         ? new Date(data.createdAt?.seconds * 1000)
         : null,

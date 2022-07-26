@@ -1,16 +1,15 @@
 import type { NextPage } from 'next'
 import Link from 'next/link'
-import { collection } from 'firebase/firestore'
+import { collection, query, orderBy } from 'firebase/firestore'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { db } from '../../app/firebaseApp'
 import postConverter from '../../helpers/postConverter'
 
 const Posts: NextPage = () => {
+  const postsRef = collection(db, 'posts').withConverter(postConverter)
   const [posts] = useCollectionData(
-    collection(db, 'posts').withConverter(postConverter)
+    query(postsRef, orderBy('createdAt', 'desc'))
   )
-
-  console.log(posts)
 
   return (
     <div>
