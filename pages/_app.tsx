@@ -1,14 +1,12 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import Link from 'next/link'
 import Container from '@mui/material/Container'
+import Header from '../components/Header'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Container>
-      <header>
-        <Link href="/auth/register">Регистрация</Link>
-      </header>
+      <Header />
       <Component {...pageProps} />
     </Container>
   )
