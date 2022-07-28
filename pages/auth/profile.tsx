@@ -6,10 +6,10 @@ import { auth, db } from '../../app/firebaseApp'
 
 const Profile = () => {
   const [user] = useAuthState(auth)
-  const docRef = doc(db, 'users', user?.uid || 'null')
+  const docRef = doc(db, 'users', String(user?.uid))
   const [userProfile] = useDocumentData(docRef)
 
-  if (!user || !userProfile) {
+  if (!user) {
     return <div>Вы не авторизованы</div>
   }
 
@@ -23,14 +23,16 @@ const Profile = () => {
     <div>
       <h1>Профиль юзера</h1>
       <p>ID: {user.uid}</p>
-      <p>
-        Имя:{' '}
-        <input
-          type="text"
-          value={userProfile.name}
-          onChange={handleNameChange}
-        />
-      </p>
+      {userProfile && (
+        <p>
+          Имя:{' '}
+          <input
+            type="text"
+            value={userProfile.name}
+            onChange={handleNameChange}
+          />
+        </p>
+      )}
     </div>
   )
 }

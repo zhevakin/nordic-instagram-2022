@@ -183,7 +183,13 @@ const ResponsiveAppBar = () => {
                   key={setting.key}
                   onClick={() => handleCloseUserMenu(setting)}
                 >
-                  <Typography textAlign="center">{setting.text}</Typography>
+                  {setting.href ? (
+                    <Link href={setting.href}>
+                      <Typography textAlign="center">{setting.text}</Typography>
+                    </Link>
+                  ) : (
+                    <Typography textAlign="center">{setting.text}</Typography>
+                  )}
                 </MenuItem>
               ))}
             </Menu>
