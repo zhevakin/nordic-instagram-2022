@@ -2,10 +2,11 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { doc } from 'firebase/firestore'
 import { useDocumentData } from 'react-firebase-hooks/firestore'
+import Post from '../../components/Post'
 import { db } from '../../app/firebaseApp'
 import postConverter from '../../helpers/postConverter'
 
-const Post: NextPage = () => {
+const PostPage: NextPage = () => {
   const router = useRouter()
   const docRef = doc(db, 'posts', String(router.query.id)).withConverter(
     postConverter
@@ -15,18 +16,9 @@ const Post: NextPage = () => {
   return (
     <div>
       <h1>Страница поста</h1>
-      {post && (
-        <div>
-          <div>
-            {post.createdAt && <div>{post.createdAt.toLocaleDateString()}</div>}
-            <img style={{ maxWidth: 500 }} src={post.imageURL} alt="" />
-          </div>
-          <div>{post.text}</div>
-        </div>
-      )}
-      <button onClick={() => router.push('/posts')}>Список постов</button>
+      {post && <Post post={post} />}
     </div>
   )
 }
 
-export default Post
+export default PostPage
