@@ -5,7 +5,7 @@ type Comment = {
     name: string
   }
   text: string
-  createdAt: Date
+  createdAt: Date | null
 }
 
 export default Comment
