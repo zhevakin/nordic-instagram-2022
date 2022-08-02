@@ -14,7 +14,7 @@ import type PostType from '../types/post'
 
 type PostPropTypes = {
   post: PostType
-  onLikeClick: () => void
+  onLikeClick?: () => void
   liked?: boolean
 }
 
