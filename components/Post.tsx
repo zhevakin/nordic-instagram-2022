@@ -31,7 +31,9 @@ const Post: FC<PostPropTypes> = ({ post, onLikeClick, liked }) => {
       <CardHeader title={post.user.name} subheader={date} />
       <Link href={`/posts/${post.id}`}>
         <a>
-          <CardMedia component="img" image={post.imageURL} />
+          {post.images.map((image) => (
+            <CardMedia key={image} component="img" image={image} />
+          ))}
         </a>
       </Link>
       <CardContent>{post.text}</CardContent>

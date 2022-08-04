@@ -11,7 +11,7 @@ import { Alert } from '@mui/material'
 import useUserProfile from '../../helpers/useUserProfile'
 
 type FormData = {
-  imageURL: string
+  images: string[]
   text: string
 }
 
@@ -27,7 +27,7 @@ const New = () => {
     formState: { errors },
   } = useForm<FormData>({ mode: 'onChange' })
   const [uploadFile, uploading] = useUploadFile()
-  const imageURLValue = watch('imageURL')
+  const imagesValue = watch('images')
 
   const onSubmit = handleSubmit(async (data) => {
     if (userProfile) {
@@ -38,7 +38,7 @@ const New = () => {
           name: userProfile.name,
         },
         createdAt: serverTimestamp(),
-        imageURL: data.imageURL,
+        images: data.images,
       }
       const docRef = await addDoc(collection(db, 'posts'), newPost)
       router.push(`/posts/${docRef.id}`)
@@ -47,19 +47,24 @@ const New = () => {
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      const fileRef = ref(
-        storage,
-        `${Date.now()}-${event.target.files[0].name}`
-      )
-      const result = await uploadFile(fileRef, event.target.files[0])
-      if (result) {
-        const imageURL = await getDownloadURL(result?.ref)
-        setValue('imageURL', imageURL, { shouldValidate: true })
+      const fileUploads = Array.from(event.target.files).map(async (file) => {
+        const fileRef = ref(storage, `${Date.now()}-${file.name}`)
+        const result = await uploadFile(fileRef, file)
+        if (result) {
+          return await getDownloadURL(result?.ref)
+        }
+        return ''
+      })
+
+      const results = await Promise.all(fileUploads)
+
+      if (results) {
+        setValue('images', results, { shouldValidate: true })
       }
     }
   }
 
-  register('imageURL', { required: true })
+  register('images', { required: true })
 
   return (
     <div>
@@ -73,15 +78,18 @@ const New = () => {
             sx={{ mb: 1 }}
           >
             Загрузить фото
-            <input type="file" hidden onChange={handleFileChange} />
+            <input multiple type="file" hidden onChange={handleFileChange} />
           </Button>
         </div>
-        {errors.imageURL && (
-          <Alert severity="error">Пожалуйста, загрузите фото</Alert>
+        {errors.images && (
+          <Alert severity="error">
+            Пожалуйста, загрузите хотя бы одно фото
+          </Alert>
         )}
-        {imageURLValue && (
-          <img src={imageURLValue} alt="" style={{ width: 200 }} />
-        )}
+        {imagesValue &&
+          imagesValue.map((image) => (
+            <img key={image} src={image} alt="" style={{ width: 200 }} />
+          ))}
         <TextField
           {...register('text')}
           multiline
