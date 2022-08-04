@@ -1,20 +1,16 @@
-import { doc, updateDoc } from 'firebase/firestore'
+import { updateDoc } from 'firebase/firestore'
 import { ChangeEvent } from 'react'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { useDocumentData } from 'react-firebase-hooks/firestore'
-import { auth, db } from '../../app/firebaseApp'
+import useUserProfile from '../../helpers/useUserProfile'
 
 const Profile = () => {
-  const [user] = useAuthState(auth)
-  const docRef = doc(db, 'users', String(user?.uid))
-  const [userProfile] = useDocumentData(docRef)
+  const { userProfile, userRef } = useUserProfile()
 
-  if (!user) {
+  if (!userProfile) {
     return <div>Вы не авторизованы</div>
   }
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    updateDoc(docRef, {
+    updateDoc(userRef, {
       name: event.target.value,
     })
   }
@@ -22,16 +18,16 @@ const Profile = () => {
   return (
     <div>
       <h1>Профиль юзера</h1>
-      <p>ID: {user.uid}</p>
+      <p>ID: {userProfile.uid}</p>
       {userProfile && (
-        <p>
+        <div>
           Имя:{' '}
           <input
             type="text"
             value={userProfile.name}
             onChange={handleNameChange}
           />
-        </p>
+        </div>
       )}
     </div>
   )
