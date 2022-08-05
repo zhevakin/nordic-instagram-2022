@@ -16,7 +16,7 @@ const Images: FC<ImagesProps> = ({ images }) => {
     >
       {images.map((image) => (
         <SwiperSlide key={image}>
-          <Image src={image} />
+          <Image src={image} alt="" />
         </SwiperSlide>
       ))}
     </Swiper>
