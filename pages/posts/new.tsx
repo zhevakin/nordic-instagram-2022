@@ -9,6 +9,7 @@ import Button from '@mui/material/Button'
 import { db, storage } from '../../app/firebaseApp'
 import { Alert } from '@mui/material'
 import useUserProfile from '../../helpers/useUserProfile'
+import ImagesOrder from '../../components/ImagesOrder'
 
 type FormData = {
   images: string[]
@@ -64,6 +65,10 @@ const New = () => {
     }
   }
 
+  const handleImagesSort = (newImages: string[]) => {
+    setValue('images', newImages)
+  }
+
   register('images', { required: true })
 
   return (
@@ -86,10 +91,9 @@ const New = () => {
             Пожалуйста, загрузите хотя бы одно фото
           </Alert>
         )}
-        {imagesValue &&
-          imagesValue.map((image) => (
-            <img key={image} src={image} alt="" style={{ width: 200 }} />
-          ))}
+        {imagesValue && (
+          <ImagesOrder images={imagesValue} onSort={handleImagesSort} />
+        )}
         <TextField
           {...register('text')}
           multiline
